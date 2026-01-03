@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevTeam Stratejik Pano</title>
+    <title>DevOps Strategy Site</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -14,15 +14,18 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .tree-line::before {
+        
+        .tree-line-main::before {
             content: '';
             position: absolute;
             left: 20px;
-            top: 40px;
+            top: 10px;
             bottom: 0;
             width: 2px;
-            background: linear-gradient(to bottom, #6366f1, transparent);
+            background: linear-gradient(to bottom, #10b981 0%, #f59e0b 30%, #6366f1 60%, #ef4444 100%);
+            z-index: 0;
         }
+
         .subtask-node {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             max-height: 0;
@@ -30,17 +33,28 @@
             overflow: hidden;
         }
         .subtask-node.open {
-            max-height: 500px;
+            max-height: 1200px;
             opacity: 1;
             margin-top: 1rem;
         }
         .rotate-icon { transition: transform 0.3s; }
         .rotate-icon.active { transform: rotate(180deg); }
         
-        /* Aktif görevler için hafif bir parlama efekti */
-        .status-in-progress {
-            box-shadow: 0 0 15px -5px rgba(99, 102, 241, 0.3);
+        /* ÖNEMLİ GÖREV PARLAMASI */
+        .critical-glow {
+            border: 1px solid rgba(239, 68, 68, 0.7) !important;
+            box-shadow: 0 0 15px -2px rgba(239, 68, 68, 0.5);
+            animation: pulse-red 3s infinite;
         }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .status-focus { box-shadow: 0 0 15px -5px rgba(245, 158, 11, 0.5); }
+        .done-node { opacity: 0.6; filter: grayscale(0.2); }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-200 min-h-screen selection:bg-indigo-500">
@@ -50,11 +64,11 @@
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-3">
                     <i data-lucide="trello" class="text-indigo-500 h-6 w-6"></i>
-                    <span class="font-bold text-xl tracking-tight text-white">Dev<span class="text-indigo-500">Team</span> Strateji</span>
+                    <span class="font-bold text-xl tracking-tight text-white">Dev<span class="text-indigo-500">Ops</span> Strategy</span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <button onclick="switchView('board')" id="btn-board" class="text-sm font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white transition-all">Görev Panosu</button>
-                    <button onclick="switchView('tree')" id="btn-tree" class="text-sm font-medium px-4 py-2 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">Hedef Ağacı</button>
+                    <button onclick="switchView('board')" id="btn-board" class="text-sm font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white transition-all shadow-lg">Task Board</button>
+                    <button onclick="switchView('tree')" id="btn-tree" class="text-sm font-medium px-4 py-2 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">Goal Tree</button>
                 </div>
             </div>
         </div>
@@ -64,14 +78,14 @@
         
         <div id="view-board" class="space-y-12">
             <header class="text-center space-y-4">
-                <h1 class="text-4xl font-bold text-white tracking-tight">Proje Yönetim Merkezi</h1>
-                <p class="text-slate-400">Ekip görevleri ve aktif süreç takibi.</p>
+                <h1 class="text-4xl font-bold text-white tracking-tight">Project Management Center</h1>
+                <p class="text-slate-400">Team tasks and active process tracking.</p>
             </header>
 
             <section>
                 <div class="flex items-center gap-2 mb-6">
                     <i data-lucide="users" class="text-emerald-400 h-5 w-5"></i>
-                    <h2 class="text-2xl font-semibold text-white">Ekip</h2>
+                    <h2 class="text-2xl font-semibold text-white">Team</h2>
                 </div>
                 <div id="team-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-9 gap-3"></div>
             </section>
@@ -79,16 +93,16 @@
             <section>
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-semibold text-white flex items-center gap-2">
-                        <i data-lucide="zap" class="text-amber-400 h-5 w-5"></i> Aktif Görevler
+                        <i data-lucide="zap" class="text-amber-400 h-5 w-5"></i> Active Tasks
                     </h2>
-                    <button onclick="renderAll()" class="text-xs text-slate-500 hover:text-slate-300 underline transition-colors">Filtreleri Sıfırla</button>
+                    <button onclick="renderAll()" class="text-xs text-slate-500 hover:text-slate-300 underline transition-colors">Clear Filters</button>
                 </div>
                 <div id="tasks-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </section>
 
             <section>
                 <h2 class="text-2xl font-semibold text-white mb-6 flex items-center gap-2">
-                    <i data-lucide="rocket" class="text-purple-400 h-5 w-5"></i> Gelecek Özellikler
+                    <i data-lucide="rocket" class="text-purple-400 h-5 w-5"></i> Future Features
                 </h2>
                 <div id="features-container" class="space-y-8"></div>
             </section>
@@ -96,16 +110,17 @@
 
         <div id="view-tree" class="hidden space-y-12">
             <header class="text-center space-y-4">
-                <h1 class="text-4xl font-bold text-white">Stratejik Yol Haritası</h1>
-                <p class="text-slate-400">Ana hedefler ve dallanan alt görevler.</p>
+                <h1 class="text-4xl font-bold text-white tracking-tight">Strategic Goal Tree</h1>
+                <p class="text-slate-400">Chronological and hierarchical development map of the project.</p>
             </header>
-            <div class="max-w-3xl mx-auto relative px-4">
-                <div id="tree-content" class="space-y-6 relative"></div>
+            <div class="max-w-4xl mx-auto relative px-4 py-10">
+                <div id="tree-content" class="space-y-10 relative tree-line-main"></div>
             </div>
         </div>
     </main>
 
     <script>
+        // --- VERİ SETLERİ (Senin attığın haliye, hiç dokunulmadı) ---
         const teamMembers = [
             { name: "Ulaş", role: "Front-end", color: "bg-blue-500" },
             { name: "Barkın", role: "Back-end", color: "bg-blue-500" },
@@ -144,8 +159,33 @@
                     { subtask: "Frontend UI", detail: "UI style.", assignees: ["Nihat"] }
                 ]
             },
-
+            {
+                id: "feat2",
+                mainTitle: "First deployment",
+                mainDesc: "First deployment and testing of website",
+                isImportant: true,
+                icon: "",
+                color: "red",
+                tasks: [
+                    { subtask: "Database Deployment", detail: "Deployment and Starting Database", assignees: ["Burak","Batuhan"]},
+                    { subtask: "Front/Back-end Deoployment", detail: "Deployment of Front/Back-end code", assignees: ["Burak"]}
+                ]
+            },
         ];
+
+        const doneMilestones = [
+            { title: "Control and Team Assignments", items: ["Assignments Done", "Website in progress"]}
+        ];
+
+        // --- PARAMETRE TABANLI KONTROL SİSTEMİ (Registry) ---
+        // Verilere dokunmadan, sadece başlık veya ID eşleşmesine göre "kritik" sınıfı atar.
+        const isCritical = (item) => {
+            return Boolean(item?.isImportant);
+        };
+
+
+
+        // --- RENDER LOGIC ---
 
         function getTagColor(tag) {
             const t = tag.toLowerCase();
@@ -169,32 +209,26 @@
         function renderTasks(filter = null) {
             const container = document.getElementById('tasks-grid');
             let data = filter ? activeTasks.filter(t => t.assignees.includes(filter)) : activeTasks;
-
-            // DURUMA GÖRE SIRALAMA: In Progress olanlar önce gelsin
             data.sort((a, b) => (a.status === "In Progress" ? -1 : 1));
 
             container.innerHTML = data.map(t => {
                 const colors = getTagColor(t.tag);
-                const isInProgress = t.status === "In Progress";
-                
-                // Duruma göre ikon ve ek stil seçimi
-                const statusIcon = isInProgress ? 'refresh-cw' : 'timer';
-                const statusClass = isInProgress ? 'status-in-progress border-solid' : 'opacity-70 border-dashed';
-                const iconAnim = isInProgress ? 'animate-spin' : '';
-
+                const crit = isCritical(t);
                 return `
-                <div class="glass-panel p-5 rounded-2xl border-l-4 ${colors.border} ${statusClass} transition-all duration-300">
+                <div class="glass-panel p-5 rounded-2xl border-l-4 ${colors.border} ${crit ? 'critical-glow' : (t.status === 'In Progress' ? 'status-focus border-solid' : 'opacity-70 border-dashed')} transition-all duration-300">
                     <div class="flex justify-between items-start mb-2">
-                        <span class="text-[10px] font-bold px-2 py-1 rounded border ${colors.bg} ${colors.text} uppercase tracking-widest">${t.tag}</span>
-                        <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800/50 border border-slate-700/50">
-                             <i data-lucide="${statusIcon}" class="w-3 h-3 ${isInProgress ? 'text-amber-400' : 'text-slate-500'} ${iconAnim}"></i>
-                             <span class="text-[9px] font-bold ${isInProgress ? 'text-amber-400' : 'text-slate-500'} uppercase">${t.status}</span>
+                        <span class="text-[10px] font-bold px-2 py-1 rounded border ${crit ? 'bg-red-500/20 text-red-400 border-red-500/40' : colors.bg + ' ' + colors.text} uppercase tracking-widest">
+                            ${crit ? '⚠️ CRITICAL' : t.tag}
+                        </span>
+                        <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800/50 border border-slate-700/50 text-[9px] font-bold ${t.status === 'In Progress' ? 'text-amber-400' : 'text-slate-500'}">
+                             <i data-lucide="${t.status === 'In Progress' ? 'refresh-cw' : 'timer'}" class="w-3 h-3 ${t.status === 'In Progress' ? 'animate-spin' : ''}"></i>
+                             ${t.status.toUpperCase()}
                         </div>
                     </div>
                     <h3 class="text-lg font-bold text-white mt-2">${t.title}</h3>
                     <p class="text-sm text-slate-400 mb-4 leading-relaxed">${t.desc}</p>
-                    <div class="flex flex-wrap gap-1.5">
-                        ${t.assignees.map(a => `<span class="text-[10px] bg-slate-800 text-slate-400 px-2.5 py-0.5 rounded-full border border-slate-700">${a}</span>`).join('')}
+                    <div class="flex flex-wrap gap-1">
+                        ${t.assignees.map(a => `<span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700">${a}</span>`).join('')}
                     </div>
                 </div>
             `}).join('');
@@ -203,83 +237,124 @@
 
         function renderFeatures() {
             const container = document.getElementById('features-container');
-            container.innerHTML = futureFeatures.map(feat => `
-                <div class="glass-panel rounded-2xl overflow-hidden border border-slate-800">
+            container.innerHTML = futureFeatures.map(feat => {
+                const crit = isCritical(feat);
+                return `
+                <div class="glass-panel rounded-2xl overflow-hidden border border-slate-800 ${crit ? 'critical-glow' : ''}">
                     <div class="p-6 border-b border-slate-800 bg-slate-800/30 flex items-center gap-4">
-                        <div class="p-3 bg-${feat.color}-500/10 rounded-xl"><i data-lucide="${feat.icon}" class="text-${feat.color}-400"></i></div>
+                        <div class="p-3 ${crit ? 'bg-red-500/20' : 'bg-indigo-500/10'} rounded-xl">
+                            <i data-lucide="${crit ? 'shield-alert' : (feat.icon || 'rocket')}" class="${crit ? 'text-red-400' : 'text-indigo-400'}"></i>
+                        </div>
                         <div>
-                            <h3 class="text-xl font-bold text-white">${feat.mainTitle}</h3>
+                            <h3 class="text-xl font-bold text-white uppercase tracking-tighter">${feat.mainTitle}</h3>
                             <p class="text-sm text-slate-400">${feat.mainDesc}</p>
                         </div>
                     </div>
                     <div class="p-6 grid gap-4">
                         ${feat.tasks.map(t => `
                             <div class="flex items-center justify-between bg-slate-900/50 p-3 rounded-lg border border-slate-700/50">
-                                <div><div class="font-medium text-slate-200 text-sm">${t.subtask}</div><div class="text-xs text-slate-500">${t.detail}</div></div>
+                                <div class="text-sm font-medium text-slate-200">${t.subtask}</div>
                                 <div class="flex gap-1">${t.assignees.map(a => `<span class="text-[9px] bg-slate-800 text-slate-400 px-2 py-1 rounded">${a}</span>`).join('')}</div>
                             </div>
                         `).join('')}
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
             lucide.createIcons();
         }
 
         function renderTree() {
             const container = document.getElementById('tree-content');
-            container.innerHTML = futureFeatures.map((feat, idx) => `
-                <div class="relative pl-12 tree-line">
-                    <div onclick="toggleNode('node-${idx}')" class="glass-panel p-4 rounded-xl cursor-pointer hover:bg-slate-800 transition relative z-10 flex items-center justify-between group">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-${feat.color}-500/20 flex items-center justify-center border border-${feat.color}-500/50 text-${feat.color}-400 shadow-lg">
-                                <i data-lucide="${feat.icon}"></i>
-                            </div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-indigo-400 transition">${feat.mainTitle}</h3>
-                        </div>
-                        <i data-lucide="chevron-down" class="rotate-icon text-slate-500" id="icon-node-${idx}"></i>
+            
+            let treeHTML = `
+                <div class="relative pl-12 done-node">
+                    <div class="flex items-center gap-3 text-emerald-500 mb-6">
+                        <i data-lucide="check-circle" class="w-6 h-6"></i>
+                        <h2 class="text-xl font-bold uppercase tracking-tighter">FINISHED JOBS</h2>
                     </div>
-                    <div id="node-${idx}" class="subtask-node space-y-3">
-                        ${feat.tasks.map(t => `
-                            <div class="ml-6 flex items-center gap-4 relative">
-                                <div class="w-8 h-px bg-slate-700"></div>
-                                <div class="flex-1 glass-panel p-3 rounded-lg border-l-2 border-indigo-500/50">
-                                    <div class="text-sm font-semibold text-indigo-300">${t.subtask}</div>
-                                    <div class="text-xs text-slate-500">${t.detail}</div>
+                    ${doneMilestones.map(m => `
+                        <div class="glass-panel p-4 rounded-xl border-l-2 border-emerald-500/40">
+                            <h3 class="font-bold text-emerald-400 text-sm mb-2">● ${m.title}</h3>
+                            <ul class="ml-4 space-y-1">
+                                ${m.items.map(item => `<li class="text-[11px] text-slate-400 flex items-center gap-2"><span class="w-1 h-1 bg-emerald-500 rounded-full"></span> ${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="relative pl-12">
+                    <div class="flex items-center gap-3 text-amber-500 mb-6 mt-10">
+                        <i data-lucide="zap" class="w-6 h-6 animate-pulse"></i>
+                        <h2 class="text-xl font-bold uppercase tracking-tighter">IN PROGRESS & PENDING</h2>
+                    </div>
+                    <div class="space-y-4">
+                        ${activeTasks.map(t => {
+                            const crit = isCritical(t);
+                            return `
+                            <div class="glass-panel p-4 rounded-xl border-l-4 ${crit ? 'critical-glow' : 'border-amber-500'}">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="font-bold text-white text-md">${t.title}</h3>
+                                    ${crit ? '<i data-lucide="shield-alert" class="w-4 h-4 text-red-500"></i>' : ''}
                                 </div>
+                                <p class="text-[10px] text-slate-500">Status: ${t.status} | Assigned: ${t.assignees.join(', ')}</p>
                             </div>
-                        `).join('')}
+                        `}).join('')}
                     </div>
                 </div>
-            `).join('');
+
+                <div class="relative pl-12">
+                    <div class="flex items-center gap-3 text-purple-500 mb-6 mt-10">
+                        <i data-lucide="rocket" class="w-6 h-6"></i>
+                        <h2 class="text-xl font-bold uppercase tracking-tighter">FEATURES & DEPLOYMENT</h2>
+                    </div>
+                    <div class="space-y-4">
+                        ${futureFeatures.map(feat => {
+                            const crit = isCritical(feat);
+                            return `
+                            <div class="glass-panel p-5 rounded-2xl border-l-4 ${crit ? 'critical-glow' : 'border-purple-500'}">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 class="font-bold ${crit ? 'text-red-400' : 'text-purple-200'} text-md leading-tight">${feat.mainTitle}</h3>
+                                    ${crit ? '<i data-lucide="shield-alert" class="w-4 h-4 text-red-500"></i>' : ''}
+                                </div>
+                                <div class="ml-4 space-y-2">
+                                    ${feat.tasks.map(st => `
+                                        <div class="border-l border-slate-700 pl-3">
+                                            <div class="text-[11px] font-bold text-slate-300 italic">${st.subtask}</div>
+                                            <div class="text-[9px] text-slate-500">${st.detail}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `}).join('')}
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = treeHTML;
             lucide.createIcons();
         }
+
+        // --- UTILS ---
 
         function switchView(view) {
             document.getElementById('view-board').classList.toggle('hidden', view !== 'board');
             document.getElementById('view-tree').classList.toggle('hidden', view !== 'tree');
-            
-            document.getElementById('btn-board').className = view === 'board' ? 'text-sm font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white shadow-lg' : 'text-sm font-medium px-4 py-2 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700';
-            document.getElementById('btn-tree').className = view === 'tree' ? 'text-sm font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white shadow-lg' : 'text-sm font-medium px-4 py-2 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700';
-            
-            if(view === 'tree') renderTree();
+            const btnB = document.getElementById('btn-board');
+            const btnT = document.getElementById('btn-tree');
+            if(view === 'board') {
+                btnB.classList.replace('bg-slate-800', 'bg-indigo-600'); btnB.classList.replace('text-slate-400', 'text-white');
+                btnT.classList.replace('bg-indigo-600', 'bg-slate-800'); btnT.classList.replace('text-white', 'text-slate-400');
+            } else {
+                btnT.classList.replace('bg-slate-800', 'bg-indigo-600'); btnT.classList.replace('text-slate-400', 'text-white');
+                btnB.classList.replace('bg-indigo-600', 'bg-slate-800'); btnB.classList.replace('text-white', 'text-slate-400');
+                renderTree();
+            }
         }
 
-        function toggleNode(id) {
-            const el = document.getElementById(id);
-            const icon = document.getElementById('icon-' + id);
-            el.classList.toggle('open');
-            icon.classList.toggle('active');
-        }
-
-        function filterTasks(name) {
-            renderTasks(name);
-        }
+        function filterTasks(name) { renderTasks(name); }
 
         function renderAll() {
-            renderTeam();
-            renderTasks();
-            renderFeatures();
-            lucide.createIcons();
+            renderTeam(); renderTasks(); renderFeatures(); lucide.createIcons();
         }
 
         renderAll();
