@@ -137,7 +137,6 @@
             { title: "Index Page", desc: "Index page design", assignees: ["Ulaş","Barkın"], tag: "Full-Stack", status: "In Progress" },
             { title: "Database Management", desc: "Database creation/management", assignees: ["Batuhan", "Burak"], tag: "Database", status: "In Progress" },
             { title: "Index Management", desc: "Creating/Editing pop-up and boxes in Index page", assignees: ["Ulaş","Barkın"], tag: "Full-Stack", status: "In Progress"},
-            { title: "Non-volatile pages", desc: "Creating/Editing non-volatile pages (Credentials etc.) ", assignees: ["Onur"], tag: "Front-end", status: "In Progress"},
             { title: "System pages creating front-end", desc: "Settings page style and Front-end", assignees: ["Amir","Fatah"], tag: "Full-Stack", status: "In Progress"},
             { title: "System pages creating Database", desc: "Settings & Login/out & password change Database layout", assignees: ["Burak", "Batuhan"], tag: "Database", status: "Pending"},
             { title: "Coming events database table", desc: "Creating table relation with community events", assignees: ["Batuhan"], tag: "Database", status: "Pending"},
@@ -158,6 +157,18 @@
                     { subtask: "Frontend UI", detail: "UI style. Wait until database done", assignees: ["Senanur"] }
                 ]
             },
+            
+            {
+                id: "feat3",
+                mainTitle: "İyi kötü dosyalar toparlanacak",
+                mainDesc: "Kim ne yaptı ise toplanıp düzenlenecek",
+                isImportant: true,
+                icon: "",
+                color: "red",
+                tasks: [
+                { subtask: "Artık ne varsa toparlanıp birleşecek", detail: "Dosya toplama", assignees: ["Burak","Onur"]},
+                ]
+            },
             {
                 id: "feat2",
                 mainTitle: "Fırst deployment",
@@ -175,7 +186,8 @@
         const doneMilestones = [
             { title: "Control and Team Assignments", items: ["Assignments Done", "Website in progress"]},
             { title: "Chat Page Full Stack by Rıfat", items: ["Chat front-end", "Back-end done"]},
-            { title: "Login and log out pages by Aamir and Fatah", items: ["Login/out pages front/backend"]}
+            { title: "Login and log out pages by Aamir and Fatah", items: ["Login/out pages front/backend"]},
+            { title: "Non-Volatile pages", items: ["Creating/Editing non-volatile pages"]}
         ];
 
         // --- PARAMETRE TABANLI KONTROL SİSTEMİ (Registry) ---
