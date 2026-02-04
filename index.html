@@ -135,29 +135,20 @@
 
         const activeTasks = [
             { title: "Index Page", desc: "Index page design", assignees: ["Ulaş","Barkın"], tag: "Full-Stack", status: "In Progress" },
-            { title: "Database Management", desc: "Database creation/management", assignees: ["Batuhan", "Burak"], tag: "Database", status: "In Progress" },
-            { title: "Index Management", desc: "Creating/Editing pop-up and boxes in Index page", assignees: ["Ulaş","Barkın"], tag: "Full-Stack", status: "In Progress"},
-            { title: "System pages creating front-end", desc: "Settings page style and Front-end", assignees: ["Amir","Fatah"], tag: "Full-Stack", status: "In Progress"},
-            { title: "System pages creating Database", desc: "Settings & Login/out & password change Database layout", assignees: ["Burak", "Batuhan"], tag: "Database", status: "Pending"},
-            { title: "Coming events database table", desc: "Creating table relation with community events", assignees: ["Batuhan"], tag: "Database", status: "Pending"},
-            { title: "Qr ID Transfer Logic", desc: "Back-end transfer codes Wait until database done", assignees: ["Senanur"], tag: "Back-end", status: "In Progress"},
-            { title: "Qr code Frontend UI", desc: "UI style. Wait until database done", assignees: ["Senanur"], tag: "Front-end", status: "In Progress"}
+            { title: "Qr code generator and pending", desc: "Full-Stack Wait until database done", assignees: ["Amir","Fatah"], tag: "Full-Stack", status: "In Progress"},
+            { title: "Forum and p2p message", desc: "Forum and p2p message sites fully complete", assignees:["Rıfat"], tag: "Full-Stack", status: "In Progress"},
+            { title: "Webpage style accuracy held", desc: "Settings, forum, login/out and p2p message web page style accuracy work", assignees: ["Ulaş"], tag: "Front-end",status:"Pending"},
+            { title: "All Event Timeline", desc: "Creating all event time line webpage", assignees:["Onur","Burak"], tag: "Full-Stack", status:"In Progress"},
+            { title: "All Event Timeline", desc: "Creating all event time line webpage", assignees:["Onur","Burak"], tag: "Database", status:"In Progress"},
+            { title: "Admin panel", desc: "Admin panel", assignees:["Senanur"], tag:"Full-Stack",status:"In Progress"},
+            { title: "Admin panel", desc: "Admin panel", assignees:["Burak"], tag:"Database",status:"In Progress"},
+            { title: "Community management panel", desc: "Creating Community management panel webpage", assignees: ["Onur"], tag:"Full-Stack", status: "In Progress"},
+            { title: "All security check", desc: "All security check", assignees: ["Batuhan"], tag: "Database", status:"Pending"},
+            { title: "First 50 community badge", desc: "Creating badge for 50 community", assignees: ["Barkın"], tag:"Full-Stack",status:"In Progress"},
+            
         ];
 
-        const futureFeatures = [
-            {
-                id: "feat1",
-                mainTitle: "QR Code Generator System",
-                mainDesc: "Database layout and communication between Front-end with using Back-end ",
-                icon: "qr-code",
-                color: "purple",
-                tasks: [
-                    { subtask: "Database management", detail: "QR code table management.", assignees: ["Batuhan", "Burak"] },
-                    { subtask: "ID Transfer Logic", detail: "Back-end transfer codes Wait until database done", assignees: ["Senanur"] },
-                    { subtask: "Frontend UI", detail: "UI style. Wait until database done", assignees: ["Senanur"] }
-                ]
-            },
-            
+        const futureFeatures = [            
             {
                 id: "feat3",
                 mainTitle: "İyi kötü dosyalar toparlanacak",
@@ -167,6 +158,7 @@
                 color: "red",
                 tasks: [
                 { subtask: "Artık ne varsa toparlanıp birleşecek", detail: "Dosya toplama", assignees: ["Burak","Onur"]},
+                { subtask: "Güvenlik kontrolü", detail: "Her türlü güvenlik kontrol edilecek", assignees: ["Batuhan"]}
                 ]
             },
             {
